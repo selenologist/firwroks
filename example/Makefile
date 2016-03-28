@@ -6,6 +6,18 @@ hellow.o: hellow.S
 hellow.bin: hellow.o
 	objcopy -O binary --only-section=.text $^ $@
 
+pwned.o: pwned.S
+	as $^ -o $@
+
+pwned.bin: pwned.o
+	objcopy -O binary --only-section=.text $^ $@
+
+pwned.h: pwned.bin
+	xxd -i $^ $@
+
+pwned: pwned.c pwned.h
+	gcc pwned.c -o pwned -Wall -Werror
+
 clean:
 	rm *.o *.bin
 
