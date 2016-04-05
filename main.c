@@ -1,3 +1,5 @@
+#define _GNU_SOURCE
+
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -64,12 +66,12 @@ int listenOn(const uint16_t port){ /* XXX: typing not symmetric to connectTo */
     return server_fd;
 }
 
-int readChunk(int fd, void* chunk, ssize_t chunk_size){
+int readChunk(int fd, char* chunk, ssize_t chunk_size){
     ssize_t bytes_read = 0;
     ssize_t recv_ret   = 0;
     while(1){
         recv_ret = recv(fd,
-                        (void *)chunk + bytes_read,
+                        (void*)(chunk + bytes_read),
                         chunk_size - bytes_read,
                         0);
         if(recv_ret == -1){
@@ -114,7 +116,7 @@ int main(int argc, char** argv){
         int port = atoi(argv[2]);
         int server_fd = listenOn(port);
         if(server_fd == -1){
-            munmap(chunk, CHUNK_SIZE);
+            munmap((void*)chunk, CHUNK_SIZE);
             return 1;
         }
 
@@ -123,9 +125,9 @@ int main(int argc, char** argv){
         while((client_fd = accept(server_fd, NULL, NULL)) != -1){
             fprintf(stderr, "Connected. Reading data...\n");
 
-            if(readChunk(client_fd, chunk, CHUNK_SIZE)){
+            if(readChunk(client_fd, (char*)chunk, CHUNK_SIZE)){
                 close(client_fd);
-                munmap(chunk, CHUNK_SIZE);
+                munmap((void*)chunk, CHUNK_SIZE);
                 return 1;
             }
 
@@ -144,15 +146,15 @@ int main(int argc, char** argv){
         int fd = connectTo(argv[1], argv[2]);
         if(fd == -1){
             fprintf(stderr, "Connection failed.\n");
-            munmap(chunk, CHUNK_SIZE);
+            munmap((void*)chunk, CHUNK_SIZE);
             return 1;
         }
 
         fprintf(stderr, "Connected. Reading data...\n");
 
-        if(readChunk(fd, chunk, CHUNK_SIZE)){
+        if(readChunk(fd, (char*)chunk, CHUNK_SIZE)){
             close(fd);
-            munmap(chunk, CHUNK_SIZE);
+            munmap((void*)chunk, CHUNK_SIZE);
             return 1;
         }
 
@@ -162,7 +164,7 @@ int main(int argc, char** argv){
 
         fprintf(stderr, "The code exited.\n");
         close(fd);
-        munmap(chunk, CHUNK_SIZE);
+        munmap((void*)chunk, CHUNK_SIZE);
     }
 
     return 0;

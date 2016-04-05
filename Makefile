@@ -1,5 +1,5 @@
 CC     := gcc
-CFLAGS := -g -Wall -Werror
+CFLAGS := -g -Wall -Werror -std=c99
 
 main: main.c
 	$(CC) -o $@ $^ $(CFLAGS)
