@@ -1,9 +1,15 @@
-all: hellow.bin
+all: hellow.bin pwned spawnshell.bin
 
 hellow.o: hellow.S
 	as $^ -o $@
 
 hellow.bin: hellow.o
+	objcopy -O binary --only-section=.text $^ $@
+
+spawnshell.o: spawnshell.S
+	as $^ -o $@
+
+spawnshell.bin: spawnshell.o
 	objcopy -O binary --only-section=.text $^ $@
 
 pwned.o: pwned.S
