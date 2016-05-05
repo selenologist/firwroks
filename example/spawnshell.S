@@ -22,7 +22,7 @@ _spawnshell:
 
     # syscall number in %rax (dup2)
     mov $33, %rax
-    # argument 2 in %rdi (stdin)
+    # argument 2 in %rsi (stdin)
     mov $0, %rsi
     # call.
     syscall
@@ -41,7 +41,7 @@ _spawnshell:
     # arg2 in $rsi (argv, NULL)
     xor %rsi, %rsi
 
-    # arg3 in $rsi (envp, NULL)
+    # arg3 in $rdx (envp, NULL)
     xor %rdx, %rdx
 
     syscall
